@@ -21,7 +21,6 @@ if(href.indexOf("127.") > -1 || href.indexOf("localhost") > -1) {
 }
 var CRM_TEST_MODE = 0;
 
-
 const filteredItemsStyle: React.CSSProperties = {
   width: '100%',
   height: '100px',
@@ -33,15 +32,16 @@ const searchBoxStyles: ISearchBoxStyles = {
   root: { margin: '8px' },
 };
 
+/*
 const menuItems: IContextualMenuItem[] = [
-  { key: 'newItem', text: 'New', onClick: () => console.log('New clicked') },
-  { key: 'rename', text: 'Rename', onClick: () => console.log('Rename clicked') },
-  { key: 'edit', text: 'Edit', onClick: () => console.log('Edit clicked') },
-  { key: 'properties', text: 'Properties', onClick: () => console.log('Properties clicked') },
-  { key: 'linkNoTarget', text: 'Link same window', href: 'http://bing.com' },
-  { key: 'linkWithTarget', text: 'Link new window', href: 'http://bing.com', target: '_blank' },
+  { key: '0', text: 'New', onClick: () => console.log('New clicked') },
+  { key: '1', text: 'Rename', onClick: () => console.log('Rename clicked') },
+  { key: '2', text: 'Edit', onClick: () => console.log('Edit clicked') },
+  { key: '3', text: 'Properties', onClick: () => console.log('Properties clicked') },
+  { key: '4', text: 'Link same window', href: 'http://bing.com' },
+  { key: '5', text: 'Link new window', href: 'http://bing.com', target: '_blank' },
   {
-    key: 'linkWithOnClick',
+    key: '6',
     text: 'Link click',
     href: 'http://bing.com',
     onClick: (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
@@ -51,43 +51,65 @@ const menuItems: IContextualMenuItem[] = [
     target: '_blank',
   },
   {
-    key: 'disabled',
+    key: '7',
     text: 'Disabled item',
     disabled: true,
     onClick: () => console.error('Disabled item should not be clickable.'),
   },
 ];
+*/
 
 
+
+//----------------------------
 //SearchSelectControl
 //----------------------------
 const SearchSelectControl : React.FunctionComponent = (props:any) => {
+
+  const [items, setItems] = React.useState(Array<IContextualMenuItem>);
+  const [origItems, setOrigItems] = React.useState(Array<IContextualMenuItem>);
   
-  const [items, setItems] = React.useState(menuItems);
+  const onSelectItem = (evt:any, selectedItem:any) => {
+    let selectedItemKey = selectedItem.key;
+    let selectedItemText = selectedItem.text;
+    alert(selectedItemKey + " - " + selectedItemText);
+  }
   
+  if(origItems==null || origItems.length==0) {
+    let dataItems: IContextualMenuItem[] = [
+      { key: '0', text: 'Item 1', onClick: onSelectItem },
+      { key: '1', text: 'Item 2', onClick: onSelectItem },
+      { key: '2', text: 'Item 3', onClick: onSelectItem },
+    ];    
+    setOrigItems(dataItems);
+    setItems(dataItems);
+  }
+
   const onAbort = React.useCallback(() => {
-    setItems(menuItems);
+    setItems(origItems);
   }, []);
   
   const onChange = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>, newValue: string) => {
-    const filteredItems = menuItems.filter(
+
+    const filteredItems = origItems.filter(
       item => item.text && item.text.toLowerCase().indexOf(newValue.toLowerCase()) !== -1,
     );
-
+    
     if (!filteredItems || !filteredItems.length) {
       filteredItems.push({
         key: 'no_results',
         onRender: (item, dismissMenu) => (
           <div key="no_results" style={filteredItemsStyle}>
-            <Icon iconName="SearchIssue" title="No actions found" />
-            <span>No actions found</span>
+            <Icon iconName="SearchIssue" title="No items found" />
+            <span>No items found</span>
           </div>
         ),
       });
     }
 
     setItems(filteredItems);
-  }, []);
+
+  }, [origItems]);
 
   const renderMenuList = React.useCallback(
     (menuListProps: IContextualMenuListProps, defaultRender: IRenderFunction<IContextualMenuListProps>) => {
@@ -95,8 +117,8 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
         <div>
           <div style={{ borderBottom: '1px solid #ccc' }}>
             <SearchBox
-              ariaLabel="Filter actions by text"
-              placeholder="Filter actions"
+              ariaLabel="Filter items by text"
+              placeholder="Filter Items"
               onAbort={onAbort}
               onChange={onChange}
               styles={searchBoxStyles}
@@ -108,11 +130,11 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     },
     [onAbort, onChange],
   );
-
+  
   const menuProps = React.useMemo(
     () => ({
       onRenderMenuList: renderMenuList,
-      title: 'Actions',
+      title: 'Items',
       shouldFocusOnMount: true,
       items,
     }),
@@ -121,7 +143,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   
   return (
     <>
-      <DefaultButton text="Click for ContextualMenu" menuProps={menuProps} />
+      <DefaultButton text="Items" menuProps={menuProps} />
     </>
   )
 }
@@ -137,7 +159,6 @@ export function Render(context:any, container:any, theobj:object) {
       <div><SearchSelectControl context={context} theobj={theobj} /></div>
     , container
   );
- 
 
 }
 
