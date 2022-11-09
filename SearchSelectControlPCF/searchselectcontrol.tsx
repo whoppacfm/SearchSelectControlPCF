@@ -80,7 +80,12 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
       { key: '0', text: 'Item 1', onClick: onSelectItem },
       { key: '1', text: 'Item 2', onClick: onSelectItem },
       { key: '2', text: 'Item 3', onClick: onSelectItem },
-    ];    
+    ];
+
+    for(var i=5;i<100;i++) {
+      dataItems.push({ key: i, text: 'Item '+i, onClick: onSelectItem });
+    }
+
     setOrigItems(dataItems);
     setItems(dataItems);
   }
