@@ -1,15 +1,34 @@
 //----------------------------
 //Imports
 //----------------------------
+
+//React
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { DefaultButton } from '@fluentui/react/lib/Button';
+//FluentUI
 import { ISearchBoxStyles, SearchBox } from '@fluentui/react/lib/SearchBox';
-import { Icon } from '@fluentui/react/lib/Icon';
-import { IContextualMenuListProps, IContextualMenuItem } from '@fluentui/react/lib/ContextualMenu';
 import { IRenderFunction } from '@fluentui/react/lib/Utilities';
+import { Icon } from '@fluentui/react/lib/Icon';
+
+//FluentUI Menuitems
+import { DefaultButton } from '@fluentui/react/lib/Button';
+import { IContextualMenuListProps, IContextualMenuItem } from '@fluentui/react/lib/ContextualMenu';
+
+//FluentUI Picklistitems
 import { IComboBoxOption, IComboBoxStyles, VirtualizedComboBox } from '@fluentui/react';
+
+//FluentUI Basic List
+import { getRTL } from '@fluentui/react/lib/Utilities';
+import { FocusZone, FocusZoneDirection } from '@fluentui/react/lib/FocusZone';
+import { TextField } from '@fluentui/react/lib/TextField';
+import { Image, ImageFit } from '@fluentui/react/lib/Image';
+import { Icon } from '@fluentui/react/lib/Icon';
+import { List } from '@fluentui/react/lib/List';
+import { ITheme, mergeStyleSets, getTheme, getFocusStyle } from '@fluentui/react/lib/Styling';
+import { createListItems, IExampleItem } from '@fluentui/example-data';
+import { useConst } from '@fluentui/react-hooks';
+import { getPropsWithDefaults } from 'office-ui-fabric-react';
 
 //----------------------------
 //Testing/System/DataSource
@@ -22,6 +41,104 @@ if(href.indexOf("127.") > -1 || href.indexOf("localhost") > -1) {
 var CRM_TEST_MODE = 0;
 
 
+//----------
+//Basic List
+//----------
+const BasicListControl : React.FunctionComponent = (props:any) => {
+
+  let count=5000;
+  if(props["type-nr"] == "1") {
+    count=0;
+  }
+
+  const originalItems = useConst(() => createListItems(count));
+  const [items, setItems] = React.useState(originalItems);
+  
+  const resultCountText =
+    items.length === originalItems.length ? '' : ` (${items.length} of ${originalItems.length} shown)`;
+
+  const onFilterChanged = (_: any, text: string): void => {
+    setItems(originalItems.filter(item => item.name.toLowerCase().indexOf(text.toLowerCase()) >= 0));
+  };  
+
+  const theme: ITheme = getTheme();
+  const { palette, semanticColors, fonts } = theme;
+  
+  const classNames = mergeStyleSets({
+    itemCell: [
+      getFocusStyle(theme, { inset: -1 }),
+      {
+        minHeight: 54,
+        padding: 10,
+        boxSizing: 'border-box',
+        borderBottom: `1px solid ${semanticColors.bodyDivider}`,
+        display: 'flex',
+        selectors: {
+          '&:hover': { background: palette.neutralLight },
+        },
+      },
+    ],
+    itemImage: {
+      flexShrink: 0,
+    },
+    itemContent: {
+      marginLeft: 10,
+      overflow: 'hidden',
+      flexGrow: 1,
+    },
+    itemName: [
+      fonts.xLarge,
+      {
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+      },
+    ],
+    itemIndex: {
+      fontSize: fonts.small.fontSize,
+      color: palette.neutralTertiary,
+      marginBottom: 10,
+    },
+    chevron: {
+      alignSelf: 'center',
+      marginLeft: 10,
+      color: palette.neutralTertiary,
+      fontSize: fonts.large.fontSize,
+      flexShrink: 0,
+    },
+  });  
+
+  const onclickcell = () => {
+    alert("Add");
+  };
+  const onRenderCell = (item: IExampleItem, index: number | undefined): JSX.Element => {
+    return (
+      <div className={classNames.itemCell} data-is-focusable={true}>
+        <Image className={classNames.itemImage} src={item.thumbnail} width={50} height={50} imageFit={ImageFit.cover} />
+        <div className={classNames.itemContent}>
+          <div className={classNames.itemName}>{item.name}</div>
+          <div className={classNames.itemIndex}>{`Item ${index}`}</div>
+          <div>{item.description}</div>
+        </div>
+        <Icon title="Add" style={{cursor:"pointer"}} onClick={onclickcell} className={classNames.chevron} iconName={getRTL() ? 'ChevronLeft' : 'ChevronRight'} />
+      </div>
+    );
+  };
+
+return (
+    <>
+      <FocusZone direction={FocusZoneDirection.vertical}>
+        <TextField
+          label={'Filter by name' + resultCountText}
+          // eslint-disable-next-line react/jsx-no-bind
+          onChange={onFilterChanged}
+        />
+        <List items={items} onRenderCell={onRenderCell} />
+      </FocusZone>
+    </>
+  )
+}
+
 //----------------------------
 //SearchSelectControl
 //----------------------------
@@ -30,15 +147,8 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   //Init State
   const [items, setItems] = React.useState(Array<IContextualMenuItem>);
   const [origItems, setOrigItems] = React.useState(Array<IContextualMenuItem>);
-
   const [itemsc, setItemsc] = React.useState(Array<IComboBoxOption>);
   const [origItemsc, setOrigItemsc] = React.useState(Array<IComboBoxOption>);
-
-  const onSelectItem = (evt:any, selectedItem:any) => {
-    let selectedItemKey = selectedItem.key;
-    let selectedItemText = selectedItem.text;
-    alert(selectedItemKey + " - " + selectedItemText);
-  }
   
   //Init Data
   /*
@@ -68,6 +178,13 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   ];
   */
 
+  const onSelectItem = (evt:any, selectedItem:any) => {
+    let selectedItemKey = selectedItem.key;
+    let selectedItemText = selectedItem.text;
+    alert(selectedItemKey + " - " + selectedItemText);
+  }
+
+  //Init Menuitems
   if(origItems==null || origItems.length==0) {
     let dataItems: IContextualMenuItem[] = [
       { key: '0', text: 'Item 1', onClick: onSelectItem },
@@ -83,6 +200,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     setItems(dataItems);
   }
   
+  //Init Picklistitems
   if(origItemsc==null || origItemsc.length==0) {
     const dataItems: IComboBoxOption[] = [];
     
@@ -96,17 +214,6 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     setOrigItemsc(dataItems);
     setItemsc(dataItems);
   }
-
-  const filteredItemsStyle: React.CSSProperties = {
-    width: '100%',
-    height: '100px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-  const searchBoxStyles: ISearchBoxStyles = {
-    root: { margin: '8px' },
-  };
 
   //Functions
   const onAbort = React.useCallback(() => {
@@ -128,6 +235,13 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   }, [origItemsc]);
 
   const onChange = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>, newValue: string) => {
+    const filteredItemsStyle: React.CSSProperties = {
+      width: '100%',
+      height: '100px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    };
 
     const filteredItems = origItems.filter(
       item => item.text && item.text.toLowerCase().indexOf(newValue.toLowerCase()) !== -1,
@@ -148,6 +262,10 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     setItems(filteredItems);
 
   }, [origItems]);
+
+  const searchBoxStyles: ISearchBoxStyles = {
+    root: { margin: '8px' },
+  };
 
   const renderMenuList = React.useCallback(
     (menuListProps: IContextualMenuListProps, defaultRender: IRenderFunction<IContextualMenuListProps>) => {
@@ -179,8 +297,6 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     [items, renderMenuList],
   );
 
-  const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: '300px' } };
-
   const onRenderUpperContent = () => {
     return (
       <div>
@@ -195,6 +311,8 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     )
   }
 
+  const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: '300px' } };
+  
   return (
     <>
     <div>
@@ -230,7 +348,21 @@ export function Render(context:any, container:any, theobj:object) {
   */
  
   ReactDOM.render(
+    <>
       <div><SearchSelectControl context={context} theobj={theobj} /></div>
+      <br/>
+      <br/>
+      <div style={{textAlign:"left", width:"50%", float:"left"}}>
+        <p>Basic List</p>
+        <br/>
+        <BasicListControl></BasicListControl>
+      </div>
+      <div style={{textAlign:"left", width:"50%", float:"right"}}>
+        <p>Basic List</p>
+        <br/>
+        <BasicListControl type-nr="1"></BasicListControl>
+      </div>
+    </>
     , container
   );
 
