@@ -1,7 +1,6 @@
 //----------------------------
 //Imports
 //----------------------------
-
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
@@ -21,45 +20,6 @@ if(href.indexOf("127.") > -1 || href.indexOf("localhost") > -1) {
     DATA_SOURCE="TEST";
 }
 var CRM_TEST_MODE = 0;
-
-const filteredItemsStyle: React.CSSProperties = {
-  width: '100%',
-  height: '100px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-const searchBoxStyles: ISearchBoxStyles = {
-  root: { margin: '8px' },
-};
-
-/*
-const menuItems: IContextualMenuItem[] = [
-  { key: '0', text: 'New', onClick: () => console.log('New clicked') },
-  { key: '1', text: 'Rename', onClick: () => console.log('Rename clicked') },
-  { key: '2', text: 'Edit', onClick: () => console.log('Edit clicked') },
-  { key: '3', text: 'Properties', onClick: () => console.log('Properties clicked') },
-  { key: '4', text: 'Link same window', href: 'http://bing.com' },
-  { key: '5', text: 'Link new window', href: 'http://bing.com', target: '_blank' },
-  {
-    key: '6',
-    text: 'Link click',
-    href: 'http://bing.com',
-    onClick: (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-      alert('Link clicked');
-      ev.preventDefault();
-    },
-    target: '_blank',
-  },
-  {
-    key: '7',
-    text: 'Disabled item',
-    disabled: true,
-    onClick: () => console.error('Disabled item should not be clickable.'),
-  },
-];
-*/
-
 
 
 //----------------------------
@@ -81,6 +41,33 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   }
   
   //Init Data
+  /*
+  const menuItems: IContextualMenuItem[] = [
+    { key: '0', text: 'New', onClick: () => console.log('New clicked') },
+    { key: '1', text: 'Rename', onClick: () => console.log('Rename clicked') },
+    { key: '2', text: 'Edit', onClick: () => console.log('Edit clicked') },
+    { key: '3', text: 'Properties', onClick: () => console.log('Properties clicked') },
+    { key: '4', text: 'Link same window', href: 'http://bing.com' },
+    { key: '5', text: 'Link new window', href: 'http://bing.com', target: '_blank' },
+    {
+      key: '6',
+      text: 'Link click',
+      href: 'http://bing.com',
+      onClick: (ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+        alert('Link clicked');
+        ev.preventDefault();
+      },
+      target: '_blank',
+    },
+    {
+      key: '7',
+      text: 'Disabled item',
+      disabled: true,
+      onClick: () => console.error('Disabled item should not be clickable.'),
+    },
+  ];
+  */
+
   if(origItems==null || origItems.length==0) {
     let dataItems: IContextualMenuItem[] = [
       { key: '0', text: 'Item 1', onClick: onSelectItem },
@@ -109,6 +96,17 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     setOrigItemsc(dataItems);
     setItemsc(dataItems);
   }
+
+  const filteredItemsStyle: React.CSSProperties = {
+    width: '100%',
+    height: '100px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+  const searchBoxStyles: ISearchBoxStyles = {
+    root: { margin: '8px' },
+  };
 
   //Functions
   const onAbort = React.useCallback(() => {
@@ -180,7 +178,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     }),
     [items, renderMenuList],
   );
-  
+
   const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: '300px' } };
 
   const onRenderUpperContent = () => {
