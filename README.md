@@ -8,6 +8,7 @@ Development template for a picklist control with integrated search input field, 
 ![image](https://user-images.githubusercontent.com/13801775/200846448-575b0d9f-957d-4b85-9661-c0939a37c6f9.png)
 <br/>
 <br/>
+![image](https://user-images.githubusercontent.com/13801775/201040823-da69d061-09d9-4bfc-8794-5494059f4781.png)
 
 
 
