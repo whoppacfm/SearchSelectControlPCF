@@ -67,6 +67,7 @@ const menuItems: IContextualMenuItem[] = [
 //----------------------------
 const SearchSelectControl : React.FunctionComponent = (props:any) => {
 
+  //Init State
   const [items, setItems] = React.useState(Array<IContextualMenuItem>);
   const [origItems, setOrigItems] = React.useState(Array<IContextualMenuItem>);
 
@@ -79,8 +80,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     alert(selectedItemKey + " - " + selectedItemText);
   }
   
-
-
+  //Init Data
   if(origItems==null || origItems.length==0) {
     let dataItems: IContextualMenuItem[] = [
       { key: '0', text: 'Item 1', onClick: onSelectItem },
@@ -110,6 +110,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     setItemsc(dataItems);
   }
 
+  //Functions
   const onAbort = React.useCallback(() => {
     setItems(origItems);
   }, []);
@@ -117,8 +118,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   const onAbortComboBoxSearch = React.useCallback(() => {
     setItemsc(origItemsc);
   }, []);
-  
-  
+    
   const onChangeComboBoxSearch = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>, newValue: string) => {
 
     const filteredItems = origItemsc.filter(
@@ -128,7 +128,6 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     setItemsc(filteredItems);
 
   }, [origItemsc]);
-
 
   const onChange = React.useCallback((ev: React.ChangeEvent<HTMLInputElement>, newValue: string) => {
 
@@ -181,8 +180,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
     }),
     [items, renderMenuList],
   );
-
-  //VirtualizedComboBox
+  
   const comboBoxStyles: Partial<IComboBoxStyles> = { root: { maxWidth: '300px' } };
 
   const onRenderUpperContent = () => {
