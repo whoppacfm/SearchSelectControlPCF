@@ -46,7 +46,7 @@ var CRM_TEST_MODE = 0;
 //----------
 const BasicListControl : React.FunctionComponent = (props:any) => {
 
-  let count=5000;
+  let count=20;
   if(props["type-nr"] == "1") {
     count=0;
   }
@@ -192,7 +192,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
       { key: '2', text: 'Item 3', onClick: onSelectItem },
     ];
 
-    for(var i=5;i<100;i++) {
+    for(var i=5;i<20;i++) {
       dataItems.push({ key: i+"", text: 'Item '+i, onClick: onSelectItem });
     }
 
@@ -204,7 +204,7 @@ const SearchSelectControl : React.FunctionComponent = (props:any) => {
   if(origItemsc==null || origItemsc.length==0) {
     const dataItems: IComboBoxOption[] = [];
     
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i<20; i++) {
       dataItems.push({
         key: `${i}`,
         text: `Option ${i}`,
